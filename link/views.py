@@ -129,6 +129,11 @@ def edit_application(request, pk):
     return render(request, 'edit_application.html', {'app': app, 'sections': sections})
 
 @session_required
+def delete_application_confirm(request, pk):
+    app = get_object_or_404(Application, pk=pk)
+    return render(request, 'delete_application_confirm.html', {'application': app})
+
+@session_required
 def delete_application(request, pk):
     app = get_object_or_404(Application, pk=pk)
     app.delete()
