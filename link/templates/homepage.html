@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block content %}
+<style>
+    .app-card {
+        background-color: #ffffff;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 0.3rem;
+        text-align: center;
+        margin-bottom: 1rem;
+        width: 2cm;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+    }
+    
+    .app-card .card-icon {
+        height: 40px;
+        width: 40px;
+        background-size: cover;
+        background-position: center;
+        margin-bottom: 0.3rem;
+        border-radius: 0.5rem;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .app-card .app-name {
+        font-weight: bold;
+        font-size: 13px;
+        margin-bottom: 0.3rem;
+    }
+
+    .app-card .hover-buttons {
+        display: none;
+        width: 100%;
+        text-align: center; /* Center the buttons */
+    }
+    
+    .app-card .hover-buttons a {
+        margin: 0 5px;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .app-card .hover-buttons a:hover {
+        color: #007bff;
+    }
+
+    .app-card:hover .hover-buttons {
+        display: block;
+    }
+</style>
+
+<div class="container mt-5">
+    {% if sections %}
+        {% for section, apps in sections.items %}
+            <div class="section-header">{{ section }}</div>
+            <div class="row">
+                {% for app in apps %}
+                    <div class="col-md-1">
+                        <a href="{{ app.link }}" class="app-card-link" target="_blank">
+                            <div class="app-card">
+                                <div class="card-icon" style="background-image: url('{{ app.photo.url }}');"></div>
+                                <div class="app-name">{{ app.name }}</div>
+                                <div class="spacer"></div>
+                                {% if request.session.userlogin == "django_user" %}
+                                <div class="hover-buttons" stye>
+                                    <a href="{% url 'edit_application' app.id %}" title="Edit" onclick="event.stopPropagation();"><i class="fas fa-edit"></i></a>
+                                    <a href="{% url 'delete_application' app.id %}" title="Delete" onclick="event.stopPropagation();"><i class="fas fa-trash-alt"></i></a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No applications available for your assigned sections.</p>
+    {% endif %}
+</div>
+{% endblock %}

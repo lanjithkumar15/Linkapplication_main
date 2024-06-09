@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Assign Sections{% endblock %}
+
+{% block content %}
+<div class="container mt-5 card col-lg-6">
+    <h2 class="text-center mt-3">Assign Sections to User</h2>
+    <form method="post" action="{% url 'assign_sections' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label" style="font-size: 18px;">Username</label>
+            <select name="username" class="form-control" id="username" required>
+                {% for username in users %}
+                    <option value="{{ username }}">{{ username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Select Sections</label>
+            <div class="form-check">
+                {% for section in sections %}
+                    <input class="form-check-input" type="checkbox" name="sections" id="section{{ section }}" value="{{ section }}">
+                    <label class="form-check-label" for="section{{ section }}">
+                        {{ section }}
+                    </label><br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="text-center mb-3">
+            <button type="submit" class="btn btn-primary btn-lg">Assign Sections</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

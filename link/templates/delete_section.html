@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Section{% endblock %}
+
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center align-items-center vh-100">
+    <div class="card col-lg-6 p-4">
+        <h1 class="text-center mb-4">Delete Section</h1>
+        <form id="delete-section-form" method="post" action="{% url 'delete_section' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="section" class="form-label">Select Section to Delete</label>
+                <select name="section" class="form-control" id="section" required {% if confirm_delete %}disabled{% endif %}>
+                    {% for section in sections %}
+                        <option value="{{ section.name }}" {% if section_to_delete and section.name == section_to_delete.name %}selected{% endif %}>{{ section.name }}</option>
+                    {% endfor %}
+                </select>
+                {% if confirm_delete %}
+                    <input type="hidden" name="section" value="{{ section_to_delete.name }}">
+                    <input type="hidden" name="confirm_delete" value="true">
+                {% endif %}
+            </div>
+            {% if confirm_delete %}
+                <div class="alert alert-warning">
+                    <strong>Warning!</strong> This section has associated links:
+                    <ul>
+                        {% for link in associated_links %}
+                            <li>{{ link.name }} - <a href="{{ link.link }}" target="_blank">{{ link.link }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    Are you sure you want to delete this section and all its associated links?
+                </div>
+            {% endif %}
+            <div class="text-center">
+                <button type="button" class="btn btn-danger btn-lg" id="delete-button">{% if confirm_delete %}Confirm Delete{% else %}Delete Section{% endif %}</button>
+                {% if confirm_delete %}
+                    <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='{% url 'delete_section' %}';">Cancel</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementById('delete-button').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone! {% if confirm_delete %}All associated links will also be deleted!{% endif %}",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-section-form').submit();
+            }
+        })
+    });
+</script>
+{% endblock %}

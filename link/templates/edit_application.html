@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Application{% endblock %}
+
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center align-items-center vh-100">
+    <div class="border border-3 card col-lg-6" style="background-color: #e0f7fa;">
+        <div class="card-header d-flex justify-content-center" style="font-size:20px; background-color: #ede9e9;">
+            Edit Link
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                <div class="alert alert-info">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <form method="post" enctype="multipart/form-data" action="{% url 'edit_application' app.pk %}">
+                {% csrf_token %}
+                <div class="mb-3 col-md-12">
+                    <label for="name" class="form-label">Link Name</label>
+                    <input type="text" name="name" class="form-control" id="name" value="{{ app.name }}" required>
+                </div>
+                <div class="mb-3 col-md-12">
+                    <label for="photo" class="form-label">Photo</label>
+                    <input type="file" name="photo" class="form-control" id="photo">
+                    {% if app.photo %}
+                        <img src="{{ app.photo.url }}" alt="{{ app.name }}" class="img-thumbnail mt-2" style="max-height: 150px;">
+                    {% endif %}
+                </div>
+                <div class="mb-3 col-md-12">
+                    <label for="link" class="form-label">Link URL</label>
+                    <input type="url" name="link" class="form-control" id="link" value="{{ app.link }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="section" class="form-label">Sections</label>
+                    <select name="section" class="form-control" required>
+                        <option value="{{ app.section }}" selected>{{ app.section }} </option>
+                        {% for section in sections %}
+                            <option value="{{ section }}">{{ section }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="btn-group d-flex justify-content-center">
+                    <button type="submit" class="btn btn-success" style="margin-right:10px;">Update Link</button>
+                    <button type="button" class="btn btn-danger" onclick="window.location.href='{% url 'homepage' %}';">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
